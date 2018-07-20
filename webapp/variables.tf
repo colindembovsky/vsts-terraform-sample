@@ -21,6 +21,13 @@ variable "stack_config" {
       plan_name_prefix        = "cdterra"
       app_name_prefix         = "cdterraweb"
     }
+
+    uat = {
+      name                      = "webapp"
+      rg_name_prefix            = "cd-terra"
+      plan_name_prefix          = "cdterra"
+      app_name_prefix           = "cdterraweb"
+    }
   }
 }
 
