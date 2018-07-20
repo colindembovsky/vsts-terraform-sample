@@ -32,6 +32,7 @@ locals {
   app_name              = "${local.stack["app_name_prefix"]}-${local.env_name}"
   plan_tier             = "${local.env["webapp.tier"]}"
   plan_sku              = "${local.env["webapp.sku"]}"
+  slots                 = "${compact(split(",", local.env["webapp.slots"]))}"
   db_con_str            = "${data.terraform_remote_state.sql.connection_string}"
 }
 
@@ -63,8 +64,8 @@ resource "azurerm_app_service_plan" "plan" {
 
 resource "azurerm_app_service" "webapp" {
   name                = "${local.app_name}"
-  location            = "${local.location}"
-  resource_group_name = "${local.rg_name}"
+  location            = "${azurerm_resource_group.apprg.location}"
+  resource_group_name = "${azurerm_resource_group.apprg.name}"
   app_service_plan_id = "${azurerm_app_service_plan.plan.id}"
 
 #   site_config {
@@ -87,11 +88,12 @@ resource "azurerm_app_service" "webapp" {
   }
 }
 
-resource "azurerm_app_service_slot" "slot" {
-  name                = "blue"
-  app_service_name    = "${local.app_name}"
-  location            = "${local.location}"
-  resource_group_name = "${local.rg_name}"
+resource "azurerm_app_service_slot" "slots" {
+  count               = "${length(local.slots)}"
+  name                = "${element(local.slots, count.index)}"
+  app_service_name    = "${azurerm_app_service.webapp.name}"
+  location            = "${azurerm_resource_group.apprg.location}"
+  resource_group_name = "${azurerm_resource_group.apprg.name}"
   app_service_plan_id = "${azurerm_app_service_plan.plan.id}"
 
 #   site_config {
@@ -99,7 +101,7 @@ resource "azurerm_app_service_slot" "slot" {
 #   }
 
   app_settings {
-    "SOME_KEY" = "blue-value"
+    "SOME_KEY" = "${element(local.slots, count.index)}-value"
   }
 
   connection_string {
