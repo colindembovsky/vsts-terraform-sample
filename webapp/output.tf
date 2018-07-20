@@ -1,7 +1,7 @@
-output "webapp.name" {
-  value = "${azurerm_app_service.webapp.name}"
+output "webapp.url" {
+  value = "http://${azurerm_app_service.webapp.name}.azurewebsites.net"
 }
 
-output "db_conn_str" {
-  value = "${azurerm_app_service.webapp.connection_string.0.value}"
+output "webapp.slot.url" {
+  value = "http://${azurerm_app_service.webapp.name}-${azurerm_app_service_slot.slot.name}.azurewebsites.net"
 }

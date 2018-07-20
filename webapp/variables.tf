@@ -17,9 +17,12 @@ variable "stack_config" {
   default = {
     dev = {
       name                    = "webapp"
-      sql_server_name_prefix  = "cdterrasql"
-      sql_admin_name          = "tfadmin"
-      db_name                 = "terraform_db"
+      rg_name_prefix          = "cd-terra"
+      plan_name_prefix        = "cdterra"
+      app_name_prefix         = "cdterraweb"
     }
   }
 }
+
+variable "created_by" {}
+variable "access_key" {}

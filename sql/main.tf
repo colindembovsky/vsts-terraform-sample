@@ -9,6 +9,7 @@ locals {
   env                   = "${var.environment[terraform.workspace]}"
   secrets               = "${var.secrets[terraform.workspace]}"
   stack                 = "${var.stack_config[terraform.workspace]}"
+  created_by            = "${var.created_by}"
   stack_name            = "${local.stack["name"]}"
 
   env_name              = "${terraform.workspace}"
@@ -26,6 +27,11 @@ locals {
 resource "azurerm_resource_group" "rg" {
   name     = "${local.rg_name}"
   location = "${local.location}"
+
+  tags {
+    environment = "${terraform.workspace}"
+    created_by  = "${local.created_by}"
+  }
 }
 
 resource "azurerm_sql_server" "sql" {
@@ -38,6 +44,7 @@ resource "azurerm_sql_server" "sql" {
 
   tags {
     environment = "${terraform.workspace}"
+    created_by  = "${local.created_by}"
   }
 }
 
@@ -52,5 +59,6 @@ resource "azurerm_sql_database" "db" {
 
   tags {
     environment = "${terraform.workspace}"
+    created_by  = "${local.created_by}"
   }
 }
