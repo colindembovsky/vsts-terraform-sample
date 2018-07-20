@@ -17,6 +17,18 @@ data "terraform_remote_state" "sql" {
   }
 }
 
+data "terraform_remote_state" "appinsights" {
+  backend = "azurerm"
+  workspace = "${terraform.workspace}"
+  config = {
+    resource_group_name  = "cd-terraform-rg"
+    storage_account_name = "cdterrastatesa"
+    container_name       = "state"
+    key                  = "appinsights.terraform.tfstate"
+    access_key           = "${var.access_key}"
+  }
+}
+
 locals {
   env                   = "${var.environment[terraform.workspace]}"
   secrets               = "${var.secrets[terraform.workspace]}"
@@ -34,6 +46,7 @@ locals {
   plan_sku              = "${local.env["webapp.sku"]}"
   slots                 = "${compact(split(",", local.env["webapp.slots"]))}"
   db_con_str            = "${data.terraform_remote_state.sql.connection_string}"
+  appinsights_key       = "${data.terraform_remote_state.appinsights.instrumentation_key}"
 }
 
 resource "azurerm_resource_group" "apprg" {
@@ -48,8 +61,8 @@ resource "azurerm_resource_group" "apprg" {
 
 resource "azurerm_app_service_plan" "plan" {
   name                = "${local.plan_name}"
-  location            = "${local.location}"
-  resource_group_name = "${local.rg_name}"
+  location            = "${azurerm_resource_group.apprg.location}"
+  resource_group_name = "${azurerm_resource_group.apprg.name}"
 
   sku {
     tier = "${local.plan_tier}"
@@ -74,6 +87,7 @@ resource "azurerm_app_service" "webapp" {
 
   app_settings {
     "SOME_KEY" = "some-value"
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${local.appinsights_key}"
   }
 
   connection_string {
@@ -102,6 +116,7 @@ resource "azurerm_app_service_slot" "slots" {
 
   app_settings {
     "SOME_KEY" = "${element(local.slots, count.index)}-value"
+    "APPINSIGHTS_INSTRUMENTATIONKEY" = "${local.appinsights_key}"
   }
 
   connection_string {
