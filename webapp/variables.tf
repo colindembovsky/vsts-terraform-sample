@@ -16,20 +16,21 @@ variable "stack_config" {
 
   default = {
     dev = {
-      name                    = "webapp"
-      rg_name_prefix          = "cd-terra"
-      plan_name_prefix        = "cdterra"
-      app_name_prefix         = "cdterraweb"
+      name             = "webapp"
+      rg_name_prefix   = "cd-terra"
+      plan_name_prefix = "cdterra"
+      app_name_prefix  = "cdterraweb"
     }
 
     uat = {
-      name                      = "webapp"
-      rg_name_prefix            = "cd-terra"
-      plan_name_prefix          = "cdterra"
-      app_name_prefix           = "cdterraweb"
+      name             = "webapp"
+      rg_name_prefix   = "cd-terra"
+      plan_name_prefix = "cdterra"
+      app_name_prefix  = "cdterraweb"
     }
   }
 }
 
 variable "created_by" {}
 variable "access_key" {}
+variable "release" {}

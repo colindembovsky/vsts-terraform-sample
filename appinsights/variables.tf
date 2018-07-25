@@ -16,18 +16,19 @@ variable "stack_config" {
 
   default = {
     dev = {
-      name                    = "appinsights"
-      rg_name_prefix          = "cd-terra"
-      app_name_prefix         = "cdterraweb"
+      name            = "appinsights"
+      rg_name_prefix  = "cd-terra"
+      app_name_prefix = "cdterraweb"
     }
 
     uat = {
-      name                      = "appinsights"
-      rg_name_prefix            = "cd-terra"
-      app_name_prefix           = "cdterraweb"
+      name            = "appinsights"
+      rg_name_prefix  = "cd-terra"
+      app_name_prefix = "cdterraweb"
     }
   }
 }
 
 variable "created_by" {}
 variable "access_key" {}
+variable "release" {}

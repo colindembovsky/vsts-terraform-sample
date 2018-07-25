@@ -6,8 +6,9 @@ provider "azurerm" {
 }
 
 data "terraform_remote_state" "sql" {
-  backend = "azurerm"
+  backend   = "azurerm"
   workspace = "${terraform.workspace}"
+
   config = {
     resource_group_name  = "cd-terraform-rg"
     storage_account_name = "cdterrastatesa"
@@ -18,8 +19,9 @@ data "terraform_remote_state" "sql" {
 }
 
 data "terraform_remote_state" "appinsights" {
-  backend = "azurerm"
+  backend   = "azurerm"
   workspace = "${terraform.workspace}"
+
   config = {
     resource_group_name  = "cd-terraform-rg"
     storage_account_name = "cdterrastatesa"
@@ -30,23 +32,25 @@ data "terraform_remote_state" "appinsights" {
 }
 
 locals {
-  env                   = "${var.environment[terraform.workspace]}"
-  secrets               = "${var.secrets[terraform.workspace]}"
-  stack                 = "${var.stack_config[terraform.workspace]}"
-  created_by            = "${var.created_by}"
-  stack_name            = "${local.stack["name"]}"
+  env        = "${var.environment[terraform.workspace]}"
+  secrets    = "${var.secrets[terraform.workspace]}"
+  stack      = "${var.stack_config[terraform.workspace]}"
+  created_by = "${var.created_by}"
+  stack_name = "${local.stack["name"]}"
 
-  env_name              = "${terraform.workspace}"
+  env_name = "${terraform.workspace}"
 
-  location              = "${local.env["location"]}"
-  rg_name               = "${local.stack["rg_name_prefix"]}-${local.stack_name}-${local.env_name}"
-  plan_name             = "${local.stack["plan_name_prefix"]}-${local.env_name}"
-  app_name              = "${local.stack["app_name_prefix"]}-${local.env_name}"
-  plan_tier             = "${local.env["webapp.tier"]}"
-  plan_sku              = "${local.env["webapp.sku"]}"
-  slots                 = "${compact(split(",", local.env["webapp.slots"]))}"
-  db_con_str            = "${data.terraform_remote_state.sql.connection_string}"
-  appinsights_key       = "${data.terraform_remote_state.appinsights.instrumentation_key}"
+  release = "${var.release}"
+
+  location        = "${local.env["location"]}"
+  rg_name         = "${local.stack["rg_name_prefix"]}-${local.stack_name}-${local.env_name}"
+  plan_name       = "${local.stack["plan_name_prefix"]}-${local.env_name}"
+  app_name        = "${local.stack["app_name_prefix"]}-${local.env_name}"
+  plan_tier       = "${local.env["webapp.tier"]}"
+  plan_sku        = "${local.env["webapp.sku"]}"
+  slots           = "${compact(split(",", local.env["webapp.slots"]))}"
+  db_con_str      = "${data.terraform_remote_state.sql.connection_string}"
+  appinsights_key = "${data.terraform_remote_state.appinsights.instrumentation_key}"
 }
 
 resource "azurerm_resource_group" "apprg" {
@@ -56,6 +60,7 @@ resource "azurerm_resource_group" "apprg" {
   tags {
     environment = "${terraform.workspace}"
     created_by  = "${local.created_by}"
+    release     = "${local.release}"
   }
 }
 
@@ -72,6 +77,7 @@ resource "azurerm_app_service_plan" "plan" {
   tags {
     environment = "${terraform.workspace}"
     created_by  = "${local.created_by}"
+    release     = "${local.release}"
   }
 }
 
@@ -81,24 +87,23 @@ resource "azurerm_app_service" "webapp" {
   resource_group_name = "${azurerm_resource_group.apprg.name}"
   app_service_plan_id = "${azurerm_app_service_plan.plan.id}"
 
-#   site_config {
-#     dotnet_framework_version = "v4.0"
-#   }
+  #   site_config {
+  #     dotnet_framework_version = "v4.0"
+  #   }
 
   app_settings {
-    "SOME_KEY" = "some-value"
+    "SOME_KEY"                       = "some-value"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${local.appinsights_key}"
   }
-
   connection_string {
     name  = "Default"
     type  = "SQLServer"
     value = "${local.db_con_str}"
   }
-
   tags {
     environment = "${terraform.workspace}"
     created_by  = "${local.created_by}"
+    release     = "${local.release}"
   }
 }
 
@@ -110,23 +115,22 @@ resource "azurerm_app_service_slot" "slots" {
   resource_group_name = "${azurerm_resource_group.apprg.name}"
   app_service_plan_id = "${azurerm_app_service_plan.plan.id}"
 
-#   site_config {
-#     dotnet_framework_version = "v4.0"
-#   }
+  #   site_config {
+  #     dotnet_framework_version = "v4.0"
+  #   }
 
   app_settings {
-    "SOME_KEY" = "${element(local.slots, count.index)}-value"
+    "SOME_KEY"                       = "${element(local.slots, count.index)}-value"
     "APPINSIGHTS_INSTRUMENTATIONKEY" = "${local.appinsights_key}"
   }
-
   connection_string {
     name  = "Default"
     type  = "SQLServer"
     value = "${local.db_con_str}"
   }
-
   tags {
     environment = "${terraform.workspace}"
     created_by  = "${local.created_by}"
+    release     = "${local.release}"
   }
 }

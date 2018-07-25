@@ -6,18 +6,19 @@ provider "azurerm" {
 }
 
 locals {
-  env                   = "${var.environment[terraform.workspace]}"
-  secrets               = "${var.secrets[terraform.workspace]}"
-  stack                 = "${var.stack_config[terraform.workspace]}"
-  created_by            = "${var.created_by}"
-  stack_name            = "${local.stack["name"]}"
+  env        = "${var.environment[terraform.workspace]}"
+  secrets    = "${var.secrets[terraform.workspace]}"
+  stack      = "${var.stack_config[terraform.workspace]}"
+  created_by = "${var.created_by}"
+  stack_name = "${local.stack["name"]}"
 
-  env_name              = "${terraform.workspace}"
+  env_name = "${terraform.workspace}"
+  release  = "${var.release}"
 
-  location              = "${local.env["location"]}"
-  rg_name               = "${local.stack["rg_name_prefix"]}-${local.stack_name}-${local.env_name}"
-  app_name              = "${local.stack["app_name_prefix"]}-${local.env_name}"
-  appinsights_name      = "${local.stack["app_name_prefix"]}-ai-${local.env_name}"
+  location         = "${local.env["location"]}"
+  rg_name          = "${local.stack["rg_name_prefix"]}-${local.stack_name}-${local.env_name}"
+  app_name         = "${local.stack["app_name_prefix"]}-${local.env_name}"
+  appinsights_name = "${local.stack["app_name_prefix"]}-ai-${local.env_name}"
 }
 
 resource "azurerm_resource_group" "airg" {
@@ -27,6 +28,7 @@ resource "azurerm_resource_group" "airg" {
   tags {
     environment = "${terraform.workspace}"
     created_by  = "${local.created_by}"
+    release     = "${local.release}"
   }
 }
 
@@ -40,6 +42,6 @@ resource "azurerm_application_insights" "appinsights" {
     environment = "${terraform.workspace}"
     created_by  = "${local.created_by}"
     webapp      = "${local.app_name}"
+    release     = "${local.release}"
   }
 }
-
