@@ -2,6 +2,10 @@
 
 # vim: filetype=sh:tabstop=2:shiftwidth=2:expandtab
 
+readonly TERRAFORM_VERSION="0.11.7"
+readonly INSTALL_DIR="/usr/local/bin"
+readonly DOWNLOAD_DIR="/tmp"
+
 readonly PROGNAME=$(basename $0)
 readonly PROGDIR="$( cd "$(dirname "$0")" ; pwd -P )"
 readonly ARGS="$@"
@@ -9,9 +13,6 @@ readonly ARGS="$@"
 #################
 # pull in utils #
 #################
-readonly TERRAFORM_VERSION="0.11.7"
-readonly INSTALL_DIR="/usr/local/bin"
-readonly DOWNLOAD_DIR="/tmp"
 readonly DOWNLOAD_URL="https://releases.hashicorp.com/terraform/${TERRAFORM_VERSION}/terraform_${TERRAFORM_VERSION}_linux_amd64.zip"
 readonly DOWNLOADED_FILE="$DOWNLOAD_DIR/terraform.zip"
 
