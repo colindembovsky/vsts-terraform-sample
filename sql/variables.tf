@@ -25,7 +25,7 @@ variable "stack_config" {
 
     uat = {
       name                   = "data"
-      rg_name_prefix         = "cd-terra-"
+      rg_name_prefix         = "cd-terra"
       sql_server_name_prefix = "cdterrasql"
       sql_admin_username     = "tfadmin"
       db_name                = "terraform_db"
