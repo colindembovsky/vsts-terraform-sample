@@ -16,9 +16,9 @@ else
 fi
 
 echo
-echo "*********** Run 'plan'"
-$2/terraform plan --var-file=../global.tfvars --var-file=../release.tfvars -var="release=$4" --out=./tf.plan -no-color -input=false
+echo "*********** Run 'plan -destroy'"
+$2/terraform plan --var-file=../global.tfvars --var-file=../release.tfvars -var="release=$4" -destroy -no-color -input=false
 
 echo
-echo "*********** Run 'apply'"
-$2/terraform apply -no-color -input=false -auto-approve ./tf.plan
+echo "*********** Run 'destroy'"
+$2/terraform destroy --var-file=../global.tfvars --var-file=../release.tfvars -var="release=$4" -auto-approve -no-color -input=false
