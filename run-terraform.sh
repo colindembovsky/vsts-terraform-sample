@@ -17,4 +17,4 @@ echo "*********** Run 'plan'"
 $(TerraformPath)/terraform plan --var-file=../global.tfvars --var-file=../release.tfvars -var="release=$(Release.ReleaseName)" --out=./tf.plan -no-color -input=false
 
 echo "*********** Run 'apply'"
-$(TerraformPath)/terraform apply -no-color -input=false -auto-approve ./tf.plan
+# $(TerraformPath)/terraform apply -no-color -input=false -auto-approve ./tf.plan
