@@ -2,6 +2,7 @@
 
 echo "*********** Initialize backend"
 echo 'access_key = "$1"' > ../backend.tfvars
+cat ../backend.vars
 $2/terraform init -backend-config=../backend.tfvars -no-color
 
 echo "*********** Create or select workspace"
