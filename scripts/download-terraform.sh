@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 if [ ! -f $1/terraform ]; then
   echo "Downloading terraform from ${2} to ${1}"

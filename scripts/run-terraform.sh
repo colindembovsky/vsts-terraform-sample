@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 echo "*********** Initialize backend"
 echo "access_key = \"${1}\"" > ../backend.tfvars

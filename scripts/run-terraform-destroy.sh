@@ -1,8 +1,7 @@
-#!/bin/bash
+#!/bin/bash -e
 
 echo "*********** Initialize backend"
 echo "access_key = \"${1}\"" > ../backend.tfvars
-cat ../backend.tfvars
 $2/terraform init -backend-config=../backend.tfvars -no-color
 
 echo ""
@@ -17,8 +16,8 @@ fi
 
 echo ""
 echo "*********** Run 'plan -destroy'"
-$2/terraform plan --var-file=../global.tfvars --var-file=../release.tfvars -var="release=$4" -destroy -no-color -input=false
+$2/terraform plan --var-file=../global.tfvars --var-file=../release.tfvars -var="release=$4" --destroy -no-color -input=false
 
 echo ""
 echo "*********** Run 'destroy'"
-$2/terraform destroy --var-file=../global.tfvars --var-file=../release.tfvars -var="release=$4" -auto-approve -no-color -input=false
+$2/terraform destroy --var-file=../global.tfvars --var-file=../release.tfvars -var="release=$4" --auto-approve -no-color -input=false
