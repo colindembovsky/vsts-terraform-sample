@@ -1,5 +1,5 @@
 # Demo Repo for Terraform and VSTS
-This demo repo is the source code for my blogpost [Terraform all the Things with VSTS](https://colinsalmcorner.com/---).
+This demo repo is the source code for my blogpost [Terraform all the Things with VSTS](http://bit.ly/tfvstsrm).
 
 ## Working with the Repo
 In order to work with this repo, clone it and then do the following:
